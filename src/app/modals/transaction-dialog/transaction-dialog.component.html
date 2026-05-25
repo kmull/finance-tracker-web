@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>
+  {{ data ? 'Edytuj transakcję' : 'Dodaj transakcję' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form"
+        class="dialog-form">
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Kwota</mat-label>
+      <input matInput
+             type="number"
+             formControlName="amount" />
+      @if (form.get('amount')?.touched && form.get('amount')?.hasError('required')) {
+      <mat-error>Pole jest wymagane</mat-error>
+      } @else if (form.get('amount')?.touched && form.get('amount')?.hasError('min')) {
+      <mat-error>Kwota musi być większa od 0</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Kategoria</mat-label>
+      <input matInput
+             type="text"
+             formControlName="category" />
+      @if (form.get('category')?.touched && form.get('category')?.hasError('required')) {
+      <mat-error>Pole jest wymagane</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Opis</mat-label>
+      <input matInput
+             type="text"
+             formControlName="description" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Data</mat-label>
+      <input matInput
+             [matDatepicker]="picker"
+             formControlName="date" />
+      <mat-datepicker-toggle matIconSuffix
+                             [for]="picker" />
+      <mat-datepicker #picker />
+      @if (form.get('date')?.touched && form.get('date')?.hasError('required')) {
+      <mat-error>Pole jest wymagane</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button
+          (click)="onCancel()">Anuluj</button>
+  <button mat-raised-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="form.invalid">
+    {{ data ? 'Zaktualizuj' : 'Dodaj' }}
+  </button>
+</mat-dialog-actions>

@@ -7,6 +7,12 @@
       <mat-card-subtitle>Zarządzaj swoimi wydatkami</mat-card-subtitle>
     </mat-card-header>
     <mat-card-actions align="end">
+      <button mat-raised-button
+              color="primary"
+              (click)="openAddDialog()">
+        <mat-icon>add</mat-icon>
+        Dodaj transakcję
+      </button>
       <button mat-button
               color="warn"
               (click)="logout()">
@@ -14,66 +20,6 @@
         Wyloguj
       </button>
     </mat-card-actions>
-  </mat-card>
-
-  <!-- FORMULARZ DODAWANIA -->
-  <mat-card class="form-card">
-    <mat-card-header>
-      <mat-card-title>Dodaj transakcję</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="form"
-            (ngSubmit)="onSubmit()"
-            class="form-row">
-
-        <mat-form-field appearance="outline">
-          <mat-label>Kwota</mat-label>
-          <input matInput
-                 type="number"
-                 formControlName="amount" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Kategoria</mat-label>
-          <input matInput
-                 type="text"
-                 formControlName="category" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Opis</mat-label>
-          <input matInput
-                 type="text"
-                 formControlName="description" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Data</mat-label>
-          <input matInput
-                 [matDatepicker]="picker"
-                 formControlName="date" />
-          <mat-datepicker-toggle matIconSuffix
-                                 [for]="picker" />
-          <mat-datepicker #picker />
-        </mat-form-field>
-
-        <button mat-raised-button
-                color="primary"
-                type="submit"
-                [disabled]="form.invalid">
-          {{ editingId() ? 'Zaktualizuj' : 'Dodaj' }}
-        </button>
-
-        @if (editingId()) {
-        <button mat-button
-                type="button"
-                (click)="cancelEdit()">
-          Anuluj
-        </button>
-        }
-
-      </form>
-    </mat-card-content>
   </mat-card>
 
   <!-- BŁĄD -->
@@ -131,7 +77,7 @@
               *matCellDef="let t">
             <button mat-icon-button
                     color="primary"
-                    (click)="onEdit(t)">
+                    (click)="openEditDialog(t)">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button

@@ -8,30 +8,17 @@ $spacing: 16px;
   display: flex;
   flex-direction: column;
   gap: $spacing;
-}
 
-.header-card {
-  mat-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-.form-card {
-  .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spacing;
-    align-items: flex-start;
-
-    mat-form-field {
-      flex: 1;
-      min-width: 150px;
+  .header-card {
+    mat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    button {
-      height: 56px;
+    mat-card-actions {
+      display: flex;
+      gap: 8px;
     }
   }
 }

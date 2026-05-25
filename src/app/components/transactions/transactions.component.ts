@@ -1,16 +1,19 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { Transaction, TransactionRequest } from '../../models/transaction.model';
+import { catchError, EMPTY, filter, switchMap, tap } from 'rxjs';
+import { TransactionDialogComponent } from '../../modals/transaction-dialog/transaction-dialog.component';
+import { Transaction } from '../../models/transaction.model';
 import { AuthService } from '../../services/auth.service';
 import { TransactionService } from '../../services/transaction.service';
 
@@ -37,7 +40,7 @@ export class TransactionsComponent implements OnInit {
 
   private transactionService = inject(TransactionService);
   private authService = inject(AuthService);
-  private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
 
   transactions = signal<Transaction[]>([]);
   loading = signal(false);
@@ -45,13 +48,6 @@ export class TransactionsComponent implements OnInit {
   editingId = signal<number | null>(null);
 
   displayedColumns: string[] = ['date', 'category', 'description', 'amount', 'actions'];
-
-  form = this.fb.group({
-    amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
-    category: ['', Validators.required],
-    description: [''],
-    date: [new Date(), Validators.required]
-  });
 
   ngOnInit(): void {
     this.loadTransactions();
@@ -72,46 +68,40 @@ export class TransactionsComponent implements OnInit {
       });
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) return;
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(TransactionDialogComponent, {
+      width: '60vw',
+      data: null
+    });
 
-    const value = this.form.value;
-    const request: TransactionRequest = {
-      amount: value.amount!,
-      category: value.category!,
-      description: value.description || '',
-      date: new Date(value.date!).toISOString().split('T')[0]
-    };
-
-    if (this.editingId()) {
-      this.transactionService.update(this.editingId()!, request).subscribe({
-        next: () => {
-          this.editingId.set(null);
-          this.form.reset();
-          this.loadTransactions();
-        },
-        error: () => this.error.set('Błąd aktualizacji transakcji')
-      })
-    } else {
-      this.transactionService.create(request).subscribe({
-        next: () => {
-          this.form.reset();
-          this.loadTransactions();
-        },
-        error: () => this.error.set('Błąd dodawania transakcji')
-      });
-    }
-
+    dialogRef.afterClosed()
+      .pipe(
+        filter(result => !!result),
+        switchMap(result => this.transactionService.create(result)),
+        tap(() => this.loadTransactions()),
+        catchError(() => {
+          this.error.set('Błąd dodawania transakcji');
+          return EMPTY;
+        })
+      ).subscribe();
   }
 
-  onEdit(transaction: Transaction): void {
-    this.editingId.set(transaction.id);
-    this.form.patchValue({
-      amount: transaction.amount,
-      category: transaction.category,
-      description: transaction.description,
-      date: new Date(transaction.date)
+  openEditDialog(transaction: Transaction): void {
+    const dialogRef = this.dialog.open(TransactionDialogComponent, {
+      width: '60vw',
+      data: transaction
     });
+
+    dialogRef.afterClosed()
+      .pipe(
+        filter(result => !!result),
+        switchMap(result => this.transactionService.update(transaction.id, result)),
+        tap(() => this.loadTransactions()),
+        catchError(() => {
+          this.error.set('Błąd aktualizacji transakcji');
+          return EMPTY;
+        })
+      ).subscribe();
   }
 
   cancelEdit(): void {
