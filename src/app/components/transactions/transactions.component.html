@@ -1,0 +1,160 @@
+<div class="transactions-container">
+
+  <!-- NAGŁÓWEK -->
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>Finance Tracker</mat-card-title>
+      <mat-card-subtitle>Zarządzaj swoimi wydatkami</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-button
+              color="warn"
+              (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Wyloguj
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- FORMULARZ DODAWANIA -->
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Dodaj transakcję</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form"
+            (ngSubmit)="onSubmit()"
+            class="form-row">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Kwota</mat-label>
+          <input matInput
+                 type="number"
+                 formControlName="amount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Kategoria</mat-label>
+          <input matInput
+                 type="text"
+                 formControlName="category" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Opis</mat-label>
+          <input matInput
+                 type="text"
+                 formControlName="description" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Data</mat-label>
+          <input matInput
+                 [matDatepicker]="picker"
+                 formControlName="date" />
+          <mat-datepicker-toggle matIconSuffix
+                                 [for]="picker" />
+          <mat-datepicker #picker />
+        </mat-form-field>
+
+        <button mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="form.invalid">
+          {{ editingId() ? 'Zaktualizuj' : 'Dodaj' }}
+        </button>
+
+        @if (editingId()) {
+        <button mat-button
+                type="button"
+                (click)="cancelEdit()">
+          Anuluj
+        </button>
+        }
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- BŁĄD -->
+  @if (error()) {
+  <p class="error-message">{{ error() }}</p>
+  }
+
+  <!-- SPINNER -->
+  @if (loading()) {
+  <div class="spinner-container">
+    <mat-spinner diameter="40" />
+  </div>
+  }
+
+  <!-- TABELA -->
+  @if (!loading()) {
+  <mat-card>
+    <mat-card-content>
+      <table mat-table
+             [dataSource]="transactions()"
+             class="full-width">
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell
+              *matHeaderCellDef>Data</th>
+          <td mat-cell
+              *matCellDef="let t">{{ t.date }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell
+              *matHeaderCellDef>Kategoria</th>
+          <td mat-cell
+              *matCellDef="let t">{{ t.category }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell
+              *matHeaderCellDef>Opis</th>
+          <td mat-cell
+              *matCellDef="let t">{{ t.description }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell
+              *matHeaderCellDef>Kwota</th>
+          <td mat-cell
+              *matCellDef="let t">{{ t.amount | number:'1.2-2' }} zł</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell
+              *matHeaderCellDef>Akcje</th>
+          <td mat-cell
+              *matCellDef="let t">
+            <button mat-icon-button
+                    color="primary"
+                    (click)="onEdit(t)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button
+                    color="warn"
+                    (click)="onDelete(t.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+            *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+
+      @if (transactions().length === 0) {
+      <p class="no-data">Brak transakcji — dodaj pierwszą!</p>
+      }
+
+    </mat-card-content>
+  </mat-card>
+  }
+
+</div>

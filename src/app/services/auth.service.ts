@@ -2,17 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { debounceTime, Observable } from 'rxjs';
-
-export interface AuthRequest {
-  email: string;
-  password: string;
-  name?: string;
-}
-
-export interface AuthResponse {
-  token: string;
-}
-
+import { AuthRequest, AuthResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root',

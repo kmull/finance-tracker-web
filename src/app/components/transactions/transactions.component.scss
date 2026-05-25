@@ -1,0 +1,58 @@
+$spacing: 16px;
+
+.transactions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing;
+
+  display: flex;
+  flex-direction: column;
+  gap: $spacing;
+}
+
+.header-card {
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.form-card {
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing;
+    align-items: flex-start;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    button {
+      height: 56px;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: $spacing;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 14px;
+}
+
+.no-data {
+  text-align: center;
+  color: #64748b;
+  padding: 32px;
+}
