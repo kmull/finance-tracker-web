@@ -1,0 +1,30 @@
+$card-width: 400px;
+$spacing: 24px;
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+
+  mat-card {
+    width: $card-width;
+    padding: $spacing;
+
+    mat-card-header {
+      margin-bottom: $spacing;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
