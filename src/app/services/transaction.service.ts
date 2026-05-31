@@ -11,8 +11,9 @@ export class TransactionService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:9001/api/transactions';
 
-  getAll(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(this.apiUrl);
+  getAll(sortBy?: string): Observable<Transaction[]> {
+    const params = sortBy ? { params: { sortBy } } : {};
+    return this.http.get<Transaction[]>(this.apiUrl, params);
   }
 
   create(data: TransactionRequest): Observable<Transaction> {
