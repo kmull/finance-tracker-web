@@ -19,7 +19,6 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data)
       .pipe(
         debounceTime(5000)
-
       );
   }
 

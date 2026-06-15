@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>{{ data ? 'Edytuj budżet' : 'Dodaj budżet' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Kategoria</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categories; track cat) {
+        <mat-option [value]="cat">{{ categoryLabels[cat] }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('category')?.hasError('required')) {
+      <mat-error>Kategoria jest wymagana</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Limit (zł)</mat-label>
+      <input matInput
+             type="number"
+             formControlName="limit"
+             min="1" />
+      @if (form.get('limit')?.hasError('required')) {
+      <mat-error>Limit jest wymagany</mat-error>
+      }
+      @if (form.get('limit')?.hasError('min')) {
+      <mat-error>Limit musi być większy od 0</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Miesiąc</mat-label>
+      <input matInput
+             [matDatepicker]="picker"
+             formControlName="month" />
+      <mat-datepicker-toggle matIconSuffix
+                             [for]="picker" />
+      <mat-datepicker #picker
+                      startView="year"
+                      (monthSelected)="onMonthSelected($event, picker)" />
+      @if (form.get('month')?.hasError('required')) {
+      <mat-error>Miesiąc jest wymagany</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button
+          (click)="onCancel()">Anuluj</button>
+  <button mat-raised-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="form.invalid">
+    {{ data ? 'Zapisz' : 'Dodaj' }}
+  </button>
+</mat-dialog-actions>

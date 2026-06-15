@@ -1,0 +1,87 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Budżety</mat-card-title>
+    <span class="spacer"></span>
+    <button mat-raised-button
+            color="primary"
+            (click)="openAddDialog()">
+      <mat-icon>add</mat-icon> Dodaj budżet
+    </button>
+    <button mat-button
+            (click)="logout()">
+      <mat-icon>logout</mat-icon> Wyloguj
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    @if (loading()) {
+    <mat-spinner diameter="40" />
+    }
+
+    @if (error()) {
+    <p class="error">{{ error() }}</p>
+    }
+
+    @if (!loading() && budgets().length === 0) {
+    <p class="empty">Brak budżetów. Dodaj pierwszy!</p>
+    }
+
+    @if (!loading() && budgets().length > 0) {
+    <mat-table [dataSource]="budgets()">
+
+      <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef>Kategoria</mat-header-cell>
+        <mat-cell *matCellDef="let b">
+          {{ b.categoryDescription }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="month">
+        <mat-header-cell *matHeaderCellDef>Miesiąc</mat-header-cell>
+        <mat-cell *matCellDef="let b">{{ b.month | slice:0:7 }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="limit">
+        <mat-header-cell *matHeaderCellDef>Limit</mat-header-cell>
+        <mat-cell *matCellDef="let b">{{ b.limit | number:'1.2-2' }} zł</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="totalSpent">
+        <mat-header-cell *matHeaderCellDef>Wydano</mat-header-cell>
+        <mat-cell *matCellDef="let b">{{ b.totalSpent | number:'1.2-2' }} zł</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let b"
+                  [ngClass]="{'exceeded': b.exceeded, 'ok': !b.exceeded}">
+          {{ b.exceeded ? '⚠️ Przekroczony' : '✅ OK' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Akcje</mat-header-cell>
+        <mat-cell *matCellDef="let b">
+          <button mat-icon-button
+                  color="primary"
+                  (click)="openEditDialog(b)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button
+                  color="warn"
+                  (click)="onDelete(b.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns" />
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               [ngClass]="{'row-exceeded': row.exceeded}" />
+
+    </mat-table>
+    }
+
+  </mat-card-content>
+</mat-card>

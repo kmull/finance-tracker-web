@@ -1,0 +1,36 @@
+mat-card {
+  margin: 24px;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.error {
+  color: red;
+}
+
+.empty {
+  color: gray;
+  text-align: center;
+  padding: 24px;
+}
+
+.exceeded {
+  color: #e53935;
+  font-weight: bold;
+}
+
+.ok {
+  color: #43a047;
+}
+
+.row-exceeded {
+  background-color: #fff3f3;
+}

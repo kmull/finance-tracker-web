@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { BudgetsComponent } from './components/budgets/budgets.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
@@ -16,6 +17,11 @@ export const routes: Routes = [
   {
     path: 'transaction',
     component: TransactionsComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'budgets',
+    component: BudgetsComponent,
     canActivate: [authGuard]
   },
   {
